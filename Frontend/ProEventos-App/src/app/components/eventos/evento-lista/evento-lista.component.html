@@ -1,0 +1,65 @@
+<div class="card rounded shadow-sm p-3">
+  <div class="d-flex">
+    <div class="flex-fill pr-3">
+      <div class="input-group mb-2">
+        <div class="input-group-prepend"><label class="input-group-text">Filtro:</label></div>
+        <input type="text" class="form-control" placeholder="Filtrar por Tema e Local" [(ngModel)]="filtrolista">
+      </div>
+    </div>
+    <div>
+      <a class="d-flex btn btn-outline-primary" routerLink="/eventos/detalhe">
+        <i class="fa fa-plus-circle my-1"></i>
+        <b class="ml-1 d-none d-sm-block">Novo</b></a>
+    </div>
+  </div>
+  <table class="table table-stoped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th class="d-none d-md-table-cell"><button type="button" class="btn btn-outline-light btn-sm"
+            (click)="alterarImagem()">
+            <i class="{{exibirImagem ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
+            {{exibirImagem ? 'Mostrar' : 'Ocultar'}}</button></th>
+        <th>#</th>
+        <th>Tema</th>
+        <th class="d-none d-md-table-cell">Local</th>
+        <th>Data</th>
+        <th class="d-none d-md-table-cell">Qtd Pessoas</th>
+        <th class="d-none d-md-table-cell">Lote</th>
+        <th>Opções</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="eventos && eventos.length">
+      <tr *ngFor="let e of eventosFiltrados" (click)="detalheEvento(e.id)" style="cursor:pointer;">
+        <td class="d-none d-md-table-cell">
+          <img [collapse]="exibirImagem" [isAnimated]="true" src="/assets/{{e.imagemURL}}" [style.width.px]="widthImg"
+            [style.margin.px]="marginImg">
+        </td>
+        <td>{{e.id}}</td>
+        <td>{{e.tema}}</td>
+        <td class="d-none d-md-table-cell">{{e.local}}</td>
+        <td>{{e.dataEvento | DateTimeFormat }}</td>
+        <td class="d-none d-md-table-cell">{{e.qtdPessoas}}</td>
+        <td class="d-none d-md-table-cell">{{e.lotes[0].nome}}</td>
+        <td>
+          <button type="button" class="btn btn-danger btn-lg" tooltip="Eliminar" (click)="openModal(template)">
+            <i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot *ngIf="!eventos.length">
+      <tr>
+        <td colspan="8" class="text-center">
+          <h4>Nenhum evento econtrado!</h4>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Tem a certeza que deseja eliminar este evento?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="decline()">Não</button>
+  </div>
+</ng-template>
