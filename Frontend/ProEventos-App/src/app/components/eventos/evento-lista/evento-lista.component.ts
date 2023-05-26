@@ -11,7 +11,7 @@ import { EventoService } from '@app/services/evento.service';
   styleUrls: ['./evento-lista.component.scss']
 })
 export class EventoListaComponent implements OnInit {
-modalRef?: BsModalRef;
+  modalRef?: BsModalRef;
   public eventos: Evento[] = [];
   public eventosFiltrados: Evento[] = [];
 
