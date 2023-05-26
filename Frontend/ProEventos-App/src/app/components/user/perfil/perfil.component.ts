@@ -64,7 +64,8 @@ export class PerfilComponent implements OnInit {
     this.modalRef?.hide();
   }
 
-  public resetForm(): void {
+  public resetForm(event: any): void {
+    event.preventDefault();
     this.form.reset();
   }
 
