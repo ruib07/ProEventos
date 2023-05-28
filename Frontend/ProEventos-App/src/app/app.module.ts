@@ -10,6 +10,10 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { defineLocale } from 'ngx-bootstrap/chronos';
+import { ptBrLocale } from 'ngx-bootstrap/locale';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -32,6 +36,8 @@ import { UserComponent } from './components/user/user.component';
 import { LoginComponent } from './components/user/login/login.component';
 import { RegistrationComponent } from './components/user/registration/registration.component';
 
+defineLocale('pt-br', ptBrLocale);
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,8 +53,8 @@ import { RegistrationComponent } from './components/user/registration/registrati
     EventoListaComponent,
     UserComponent,
     LoginComponent,
-    RegistrationComponent
-   ],
+    RegistrationComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -60,15 +66,16 @@ import { RegistrationComponent } from './components/user/registration/registrati
     CollapseModule.forRoot(),
     TooltipModule.forRoot(),
     BsDropdownModule.forRoot(),
+    BsDatepickerModule.forRoot(),
     ToastrModule.forRoot({
-    timeOut: 3000,
-    positionClass: 'toast-bottom-right',
-    preventDuplicates: true,
-    progressBar: true
-  }),
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+      progressBar: true,
+    }),
   ],
   providers: [EventoService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

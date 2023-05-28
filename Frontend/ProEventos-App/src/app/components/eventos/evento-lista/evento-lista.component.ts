@@ -8,12 +8,13 @@ import { EventoService } from '@app/services/evento.service';
 @Component({
   selector: 'app-evento-lista',
   templateUrl: './evento-lista.component.html',
-  styleUrls: ['./evento-lista.component.scss']
+  styleUrls: ['./evento-lista.component.scss'],
 })
 export class EventoListaComponent implements OnInit {
   modalRef?: BsModalRef;
   public eventos: Evento[] = [];
   public eventosFiltrados: Evento[] = [];
+  public eventoId: number | undefined;
 
   public widthImg: number = 150;
   public marginImg: number = 2;
@@ -26,10 +27,10 @@ export class EventoListaComponent implements OnInit {
 
   constructor(
     private eventoService: EventoService,
-     private modalService: BsModalService,
-     private toastr: ToastrService,
-     private router: Router
-     ){}
+    private modalService: BsModalService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
 
   public ngOnInit(): void {
     this.getEventos();
@@ -37,14 +38,17 @@ export class EventoListaComponent implements OnInit {
 
   public set filtrolista(value: string) {
     this.filtroListado = value;
-    this.eventosFiltrados = this.filtrolista ? this.filtrarEventos(this.filtrolista) : this.eventos;
+    this.eventosFiltrados = this.filtrolista
+      ? this.filtrarEventos(this.filtrolista)
+      : this.eventos;
   }
 
   public filtrarEventos(filtrarPor: string): Evento[] {
     filtrarPor = filtrarPor.toLocaleLowerCase();
     return this.eventos.filter(
-      (evento:any) => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
-      evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+      (evento: any) =>
+        evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
+        evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
     );
   }
 
@@ -60,12 +64,14 @@ export class EventoListaComponent implements OnInit {
       },
       error: (error: any) => {
         this.toastr.error('Erro ao carregar os eventos.', 'Erro');
-      }
+      },
     });
   }
 
-  openModal(template: TemplateRef<any>): void {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  openModal(event: any, template: TemplateRef<any>, eventoId: number): void {
+    event.stopPropagation();
+    this.eventoId = eventoId;
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
   }
 
   confirm(): void {
@@ -80,5 +86,4 @@ export class EventoListaComponent implements OnInit {
   detalheEvento(id: number): void {
     this.router.navigate([`eventos/detalhe/${id}`]);
   }
-
 }

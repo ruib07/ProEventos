@@ -2,7 +2,7 @@
 
   <div class="col-md-6 d-none d-md-block" style="height: 450px;">
     <div class="text-center col-md-12 my-auto side-heder">
-      <h1>Cadastro de Usuário</h1>
+      <h1>Registo de Utilizador</h1>
       <img src="../../../../assets/registerImage.png" class="my-4" alt="" width="400px">
     </div>
   </div>
@@ -11,22 +11,21 @@
 
     <form [formGroup]="form" class="p-1">
       <div class="pb-2 d-block d-md-none">
-        <h3 class="border-bottom">Cadastro de Usuário</h3>
+        <h3 class="border-bottom">Registo de Utilizador</h3>
       </div>
       <div class="form-row">
         <div class="form-group col-sm-6">
           <label>Primeiro Nome</label>
           <input type="text" class="form-control" formControlName="primeiroNome"
-            [ngClass]="{'is-invalid': f.primeiroNome.errors && f.primeiroNome.touched}"
-            placeholder="Insira o Primeiro nome" />
+            [ngClass]="cssValidator(f.primeiroNome)" placeholder="Insira o Primeiro nome" />
           <div class="invalid-feedback">
             Primeiro Nome é obrigatório.
           </div>
         </div>
         <div class="form-group col-sm-6">
           <label>Apelido</label>
-          <input type="text" class="form-control" formControlName="apelido"
-            [ngClass]="{'is-invalid': f.apelido.errors && f.apelido.touched}" placeholder="Insira o Apelido" />
+          <input type="text" class="form-control" formControlName="apelido" [ngClass]="cssValidator(f.apelido)"
+            placeholder="Insira o Apelido" />
           <div class="invalid-feedback">
             Apelido é obrigatório.
           </div>
@@ -34,8 +33,8 @@
       </div>
       <div class="form-group">
         <label for="">Email:</label>
-        <input class="form-control" type="text" formControlName="email"
-          [ngClass]="{'is-invalid': f.email.errors && f.email.touched}" placeholder="Insira o E-mail" />
+        <input class="form-control" type="text" formControlName="email" [ngClass]="cssValidator(f.email)"
+          placeholder="Insira o E-mail" />
         <div *ngIf="f.email.errors?.required && f.email.touched" class="invalid-feedback">
           E-mail é obrigatório.
         </div>
@@ -45,8 +44,7 @@
       </div>
       <div class="form-group">
         <label for="">Nome de Utilizador:</label>
-        <input class="form-control" type="text" formControlName="userName"
-          [ngClass]="{'is-invalid': f.userName.errors && f.userName.touched}"
+        <input class="form-control" type="text" formControlName="userName" [ngClass]="cssValidator(f.userName)"
           placeholder="Insira o nome de Utilizador" />
         <div class="invalid-feedback">
           Nome de Utilizador é obrigatório.
@@ -55,8 +53,8 @@
       <div class="form-row">
         <div class="form-group col-sm-6">
           <label for="">Password:</label>
-          <input class="form-control" type="password" formControlName="password"
-            [ngClass]="{'is-invalid': f.password.errors && f.password.touched}" placeholder="Digite uma Password" />
+          <input class="form-control" type="password" formControlName="password" [ngClass]="cssValidator(f.password)"
+            placeholder="Digite uma Password" />
           <div *ngIf="f.password.errors?.required && f.password.touched" class="invalid-feedback">
             Password é obrigatório.
           </div>
@@ -65,10 +63,9 @@
           </div>
         </div>
         <div class="form-group col-sm-6">
-          <label for="">Confirmar Senha:</label>
+          <label for="">Confirmar Password:</label>
           <input class="form-control" type="password" formControlName="confirmPassword"
-            [ngClass]="{'is-invalid': f.confirmPassword.errors && f.confirmPassword.touched}"
-            placeholder="Confirme a Password" />
+            [ngClass]="cssValidator(f.confirmPassword)" placeholder="Confirme a Password" />
           <div *ngIf="f.confirmPassword.errors?.required" class="invalid-feedback">
             Confirmar password é obrigatório.
           </div>
@@ -93,7 +90,7 @@
       <div class="form-row">
         <div class="form-group col-12">
           <a class="btn btn-link btn-block" routerLink="/user/login">
-            Já sou Cadastrado
+            Já tenho conta
           </a>
         </div>
       </div>
