@@ -26,7 +26,6 @@ namespace ProEventos.Application.Dtos
         public string ImagemURL { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
-        [Phone(ErrorMessage = "O campo {0} está com um número inválido.")]
         public int Telefone { get; set; }
 
         [Display(Name = "E-mail")]

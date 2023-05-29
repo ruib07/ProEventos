@@ -19,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 export class EventoDetalheComponent implements OnInit {
   evento = {} as Evento;
   form!: FormGroup;
+  estadoGuardar = 'post';
 
   get f(): any {
     return this.form.controls;
@@ -48,6 +49,8 @@ export class EventoDetalheComponent implements OnInit {
     const eventoIdParam = this.router.snapshot.paramMap.get('id');
 
     if (eventoIdParam !== null) {
+      this.estadoGuardar = 'put';
+
       this.eventoService.getEventoById(+eventoIdParam).subscribe(
         (evento: Evento) => {
           this.evento = { ...evento };
@@ -93,5 +96,34 @@ export class EventoDetalheComponent implements OnInit {
 
   public cssValidator(campoForm: FormControl): any {
     return { 'is-invalid': campoForm.errors && campoForm.touched };
+  }
+
+  public guardarAlteracao(): void {
+    if (this.form.valid)
+      if (this.estadoGuardar === 'post') {
+        this.evento = { ...this.form.value };
+        this.eventoService.postEvento(this.evento).subscribe(
+          () => {
+            this.toastr.success('Evento guardado com sucesso!', 'Sucesso');
+          },
+          (error: any) => {
+            console.error(error);
+            this.toastr.error('Erro ao guardar o evento!', 'Erro');
+          },
+          () => {}
+        );
+      } else {
+        this.evento = { id: this.evento.id, ...this.form.value };
+        this.eventoService.putEvento(this.evento.id, this.evento).subscribe(
+          () => {
+            this.toastr.success('Evento guardado com sucesso!', 'Sucesso');
+          },
+          (error: any) => {
+            console.error(error);
+            this.toastr.error('Erro ao guardar o evento!', 'Erro');
+          },
+          () => {}
+        );
+      }
   }
 }
