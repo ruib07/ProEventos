@@ -23,7 +23,9 @@ import { TituloComponent } from './shared/Titulo/Titulo.component';
 import { EventosComponent } from './components/eventos/eventos.component';
 import { EventoDetalheComponent } from './components/eventos/evento-detalhe/evento-detalhe.component';
 import { EventoListaComponent } from './components/eventos/evento-lista/evento-lista.component';
+
 import { EventoService } from './services/evento.service';
+import { LoteService } from './services/lote.service';
 
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
 
@@ -74,7 +76,7 @@ defineLocale('pt-br', ptBrLocale);
       progressBar: true,
     }),
   ],
-  providers: [EventoService],
+  providers: [EventoService, LoteService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
