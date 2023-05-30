@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Evento } from '@app/models/Evento';
+import { Lote } from '@app/models/Lote';
 import { EventoService } from '@app/services/evento.service';
+import { LoteService } from '@app/services/lote.service';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
 
@@ -17,12 +21,21 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./evento-detalhe.component.scss'],
 })
 export class EventoDetalheComponent implements OnInit {
+  eventoId: number;
   evento = {} as Evento;
   form!: FormGroup;
   estadoGuardar = 'post';
 
   get f(): any {
     return this.form.controls;
+  }
+
+  get modoEditar(): boolean {
+    return this.estadoGuardar === 'put';
+  }
+
+  get lotes(): FormArray {
+    return this.form.get('lotes') as FormArray;
   }
 
   get bsConfig(): any {
@@ -38,23 +51,26 @@ export class EventoDetalheComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private localeService: BsLocaleService,
-    private router: ActivatedRoute,
+    private activatedRouter: ActivatedRoute,
     private eventoService: EventoService,
-    private toastr: ToastrService
+    private loteService: LoteService,
+    private toastr: ToastrService,
+    private router: Router
   ) {
     this.localeService.use('pt-br');
   }
 
   public carregarEvento(): void {
-    const eventoIdParam = this.router.snapshot.paramMap.get('id');
+    this.eventoId = +this.activatedRouter.snapshot.paramMap.get('id');
 
-    if (eventoIdParam !== null) {
+    if (this.eventoId !== null || this.eventoId === 0) {
       this.estadoGuardar = 'put';
 
-      this.eventoService.getEventoById(+eventoIdParam).subscribe(
+      this.eventoService.getEventoById(this.eventoId).subscribe(
         (evento: Evento) => {
           this.evento = { ...evento };
           this.form.patchValue(this.evento);
+          this.carregarLotes();
         },
         (error: any) => {
           this.toastr.error('Erro ao tentar carrega Evento.', 'Erro!');
@@ -63,6 +79,21 @@ export class EventoDetalheComponent implements OnInit {
         () => {}
       );
     }
+  }
+
+  public carregarLotes(): void {
+    this.loteService.getLotesByEventoId(this.eventoId).subscribe(
+      (lotesRetorno: Lote[]) => {
+        lotesRetorno.forEach((lote) => {
+          this.lotes.push(this.criarLote(lote));
+        });
+      },
+      (error: any) => {
+        console.error(error);
+        this.toastr.error('Erro ao tentar carregar lotes!', 'Error');
+      },
+      () => {}
+    );
   }
 
   ngOnInit(): void {
@@ -86,6 +117,22 @@ export class EventoDetalheComponent implements OnInit {
       telefone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       imagemURL: ['', Validators.required],
+      lotes: this.fb.array([]),
+    });
+  }
+
+  adicionarLote(): void {
+    this.lotes.push(this.criarLote({ id: 0 } as Lote));
+  }
+
+  criarLote(lote: Lote): FormGroup {
+    return this.fb.group({
+      id: [lote.id],
+      nome: [lote.nome, Validators.required],
+      quantidade: [lote.quantidade, Validators.required],
+      preco: [lote.preco, Validators.required],
+      dataInicio: [lote.dataInicio],
+      dataFim: [lote.dataFim],
     });
   }
 
@@ -94,17 +141,18 @@ export class EventoDetalheComponent implements OnInit {
     this.form.reset();
   }
 
-  public cssValidator(campoForm: FormControl): any {
+  public cssValidator(campoForm: FormControl | AbstractControl): any {
     return { 'is-invalid': campoForm.errors && campoForm.touched };
   }
 
-  public guardarAlteracao(): void {
+  public guardarEvento(): void {
     if (this.form.valid)
       if (this.estadoGuardar === 'post') {
         this.evento = { ...this.form.value };
         this.eventoService.postEvento(this.evento).subscribe(
-          () => {
+          (eventoRetorno: Evento) => {
             this.toastr.success('Evento guardado com sucesso!', 'Sucesso');
+            this.router.navigate([`eventos/detalhe/${eventoRetorno.id}`]);
           },
           (error: any) => {
             console.error(error);
@@ -125,5 +173,20 @@ export class EventoDetalheComponent implements OnInit {
           () => {}
         );
       }
+  }
+
+  public guardarLotes(): void {
+    if (this.form.controls.lotes.valid) {
+      this.loteService.saveLote(this.eventoId, this.form.value.lotes).subscribe(
+        () => {
+          this.toastr.success('Lotes guardados com sucesso!', 'Sucesso');
+        },
+        (error: any) => {
+          console.error(error);
+          this.toastr.error('Erro ao tentar guardar lotes!', 'Erro');
+        },
+        () => {}
+      );
+    }
   }
 }
