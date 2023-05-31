@@ -23,6 +23,7 @@
     "bootstrap": "^4.6.2",
     "bootswatch": "^5.2.3",
     "ngx-bootstrap": "^7.0.0",
+    "ngx-currency": "^3.0.0",
     "ngx-toastr": "^12.1.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

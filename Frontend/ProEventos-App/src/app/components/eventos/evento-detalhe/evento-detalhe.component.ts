@@ -51,6 +51,16 @@ export class EventoDetalheComponent implements OnInit {
     };
   }
 
+  get bsConfigLote(): any {
+    return {
+      isAnimated: true,
+      adaptivePosition: true,
+      dateInputFormat: 'DD/MM/YYYY',
+      containerClass: 'theme-default',
+      showWeekNumbers: false,
+    };
+  }
+
   constructor(
     private fb: FormBuilder,
     private localeService: BsLocaleService,
@@ -67,7 +77,7 @@ export class EventoDetalheComponent implements OnInit {
   public carregarEvento(): void {
     this.eventoId = +this.activatedRouter.snapshot.paramMap.get('id');
 
-    if (this.eventoId !== null || this.eventoId === 0) {
+    if (this.eventoId !== null && this.eventoId !== 0) {
       this.estadoGuardar = 'put';
 
       this.eventoService.getEventoById(this.eventoId).subscribe(
@@ -140,8 +150,8 @@ export class EventoDetalheComponent implements OnInit {
     });
   }
 
-  public mudarValorData(value: Date, indice: number, campo: string): void {
-    this.lotes.value[indice]['campo'] = value;
+  public retornaTituloLote(nome: string): string {
+    return nome === null || nome === '' ? 'Nome do Lote' : nome;
   }
 
   public resetForm(event: any): void {

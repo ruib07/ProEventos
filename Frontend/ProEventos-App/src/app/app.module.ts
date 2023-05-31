@@ -13,6 +13,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
+import { NgxCurrencyModule } from 'ngx-currency';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -75,6 +76,7 @@ defineLocale('pt-br', ptBrLocale);
       preventDuplicates: true,
       progressBar: true,
     }),
+    NgxCurrencyModule,
   ],
   providers: [EventoService, LoteService],
   bootstrap: [AppComponent],
