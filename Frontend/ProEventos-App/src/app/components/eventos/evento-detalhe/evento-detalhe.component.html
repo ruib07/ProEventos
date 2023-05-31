@@ -105,8 +105,8 @@
         <div formArrayName="lotes" *ngFor="let lote of lotes.controls; let i=index">
           <fieldset [formGroupName]="i" class="form-group">
             <legend class="d-flex justify-content-between capitalize">
-              <button class="p-2 btn btn-sm btn-outline-warning mb-1 d-flex" tooltip="Eliminar Lote"
-                [adaptivePosition]="false" [delay]="500" placement="left">
+              <button (click)="removerLote(template, i)" class="p-2 btn btn-sm btn-outline-warning mb-1 d-flex"
+                tooltip="Eliminar Lote" [adaptivePosition]="false" [delay]="500" placement="left">
                 <i class="fa fa-window-close my-1"></i>
                 <b class="ml-1 d-none d-sm-block">Eliminar</b>
               </button>
@@ -129,11 +129,15 @@
               </div>
               <div class="form-group col-md-4">
                 <label>Data Início</label>
-                <input type="text" class="form-control" formControlName="dataInicio" placeholder="01/01/2019">
+                <input type="text" class="form-control" bsDatepicker
+                  value="{{lotes.get(i+'.dataInicio').value | date:'dd/MM/yyyy'}}" placeholder="Inserir Data Inicio"
+                  (bsValueChange)="mudarValorData($event, i, 'dataInicio')">
               </div>
               <div class="form-group col-md-4">
                 <label>Data Fim</label>
-                <input type="text" class="form-control" formControlName="dataFim" placeholder="01/01/2019">
+                <input type="text" class="form-control" bsDatepicker
+                  value="{{lotes.get(i+'.dataFim').value | date:'dd/MM/yyyy'}}" placeholder="Inserir Data Fim"
+                  (bsValueChange)="mudarValorData($event, i, 'dataFim')">
               </div>
             </div>
           </fieldset>
@@ -157,3 +161,11 @@
   </div>
 </div>
 <br>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Tem a certeza que deseja eliminar o lote {{this.loteAtual.nome}}?</p>
+    <button type="button" class="btn btn-default" (click)="confirmDeleteLote()">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="declineDeleteLote()">Não</button>
+  </div>
+</ng-template>
