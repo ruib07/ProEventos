@@ -31,8 +31,8 @@
     <tbody *ngIf="eventos && eventos.length">
       <tr *ngFor="let e of eventosFiltrados" (click)="detalheEvento(e.id)" style="cursor:pointer;">
         <td class="d-none d-md-table-cell">
-          <img [collapse]="exibirImagem" [isAnimated]="true" src="/assets/{{e.imagemURL}}" [style.width.px]="widthImg"
-            [style.margin.px]="marginImg">
+          <img [collapse]="exibirImagem" [isAnimated]="true" [src]="mostraImagem(e.imagemURL)"
+            [style.width.px]="widthImg" [style.margin.px]="marginImg">
         </td>
         <td>{{e.id}}</td>
         <td>{{e.tema}}</td>

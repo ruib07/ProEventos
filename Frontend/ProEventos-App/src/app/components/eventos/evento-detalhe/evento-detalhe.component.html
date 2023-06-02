@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="" [ngClass]="{'col-md-8 pr-4': modoEditar, 'col-md-12': !modoEditar}">
+  <div class="" [ngClass]="{'col-md-8 pr-0': modoEditar, 'col-md-12': !modoEditar}">
     <div class="card rounded shadow-sm">
       <form [formGroup]="form">
         <div class="p-3">
@@ -8,7 +8,7 @@
               <label>Tema</label>
               <input type="text" class="form-control is-invalid"
                 [ngClass]="{'is-invalid': f.tema.errors && f.tema.touched}" formControlName="tema"
-                placeholder="Insira o Tema">
+                placeholder="Insira o Tema" [(ngModel)]="evento.tema">
               <div *ngIf="f.tema.errors?.required" class="invalid-feedback">
                 O tema é obrigatório!
               </div>
@@ -24,7 +24,7 @@
             <div class="form-group col-md-8">
               <label>Local</label>
               <input type="text" class="form-control" [ngClass]="cssValidator(f.local)" formControlName="local"
-                placeholder="Local">
+                placeholder="Local" [(ngModel)]="evento.local">
               <div *ngIf="f.local.errors?.required && f.local.touched" class="invalid-feedback">
                 O local é obrigatório!
               </div>
@@ -33,7 +33,7 @@
               <label>Data e Hora</label>
               <input type="datetime" class="form-control" [ngClass]="cssValidator(f.dataEvento)"
                 value="{{evento.dataEvento | DateTimeFormat}}" bsDatepicker [bsConfig]="bsConfig"
-                formControlName="dataEvento" placeholder="">
+                formControlName="dataEvento" placeholder="" [(ngModel)]="evento.dataEvento">
               <div *ngIf="f.dataEvento.errors?.required && f.dataEvento.touched" class="invalid-feedback">
                 A data e hora é obrigatória!
               </div>
@@ -43,7 +43,7 @@
             <div class="form-group col-md-2">
               <label>Qtd Pessoas</label>
               <input type="number" class="form-control" [ngClass]="cssValidator(f.qtdPessoas)"
-                formControlName="qtdPessoas" placeholder="">
+                formControlName="qtdPessoas" placeholder="" [(ngModel)]="evento.qtdPessoas">
               <div *ngIf="f.qtdPessoas.errors?.required && f.qtdPessoas.touched" class="invalid-feedback">
                 A quantidade de pessoas é obrigatória!
               </div>
@@ -51,31 +51,23 @@
                 A quantidade de pessoas deve ser menor que 120000!
               </div>
             </div>
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-4">
               <label>Telefone</label>
               <input type="text" class="form-control" [ngClass]="cssValidator(f.telefone)" formControlName="telefone"
-                placeholder="(+351) 000 000 000">
+                placeholder="(+351) 000 000 000" [(ngModel)]="evento.telefone">
               <div *ngIf="f.telefone.errors?.required && f.telefone.touched" class="invalid-feedback">
                 O telefone é obrigatório!
               </div>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
               <label>Email</label>
               <input type="text" class="form-control" [ngClass]="cssValidator(f.email)" formControlName="email"
-                placeholder="E-mail">
+                placeholder="E-mail" [(ngModel)]="evento.email">
               <div *ngIf="f.email.errors?.required && f.email.touched" class="invalid-feedback">
                 O email é obrigatório!
               </div>
               <div *ngIf="f.email.errors?.email && f.email.touched" class="invalid-feedback">
                 O email deve ser válido!
-              </div>
-            </div>
-            <div class="form-group col-md-4">
-              <label>Imagem</label>
-              <input type="text" class="form-control" [ngClass]="cssValidator(f.imagemURL)" formControlName="imagemURL"
-                placeholder="Imagem">
-              <div *ngIf="f.imagemURL.errors?.required && f.imagemURL.touched" class="invalid-feedback">
-                A imagem é obrigatória!
               </div>
             </div>
           </div>
@@ -92,7 +84,7 @@
         </div>
       </form>
     </div>
-    <div class="card rounded shadow-sm mt-4" *ngIf="modoEditar">
+    <div class="card rounded shadow-sm mt-3" *ngIf="modoEditar">
       <div class="p-3">
         <div class="d-flex border-bottom">
           <h2 class="mr-auto">
@@ -167,9 +159,53 @@
       </div>
     </div>
   </div>
+  <div class="col-md-4" *ngIf="modoEditar">
+    <div [formGroup]="form" class="card-evento-view shadow-sm">
+      <div class="form-row">
+        <div class="form-group m-0">
+          <input type="file" #file (change)="onFileChange($event)" class="form-control is-invalid" placeholder=""
+            style="display: none">
+        </div>
+      </div>
+      <div class="card profile-card-2">
+        <div class="card-img-block">
+          <img class="image" [src]="imagemURL" class="img-fluid" (click)="file.click()" alt="Card image cap"
+            tooltip="Uplaod de Nova Imagem" [adaptivePosition]="false" placement="bottom" />
+        </div>
+        <div class="card-body pt-3">
+          <h4>{{evento.tema}}</h4>
+          <p class="card-text">
+            <b>Local:</b> {{evento.local}}
+            <br>
+            <b>Data:</b> {{evento.dataEvento | DateTimeFormat}}
+          </p>
+          <hr>
+          <p class="card-text">
+            <b>Contatos</b><br>
+            <small class="text-muted">Telefone: {{evento.telefone}}</small>
+            <br>
+            <small class="text-muted">e-mail: {{evento.email}}</small>
+          </p>
+          <p class="card-text">
+            Capacidade:
+            <small class="text-muted">{{evento.qtdPessoas}}</small>
+          </p>
+          <div class="row">
+            <div class="icon-block col-md-8 iconesSociais">
+              <a href="">
+                <i class=""></i>
+              </a>
+            </div>
+            <!--div class="col-md-4 d-flex justify-content-center">
+                <a href="#" class="btn btn-outline-primary">Participar</a>
+              </div-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <br>
-
 <ng-template #template>
   <div class="modal-body text-center">
     <p>Tem a certeza que deseja eliminar o lote {{this.loteAtual.nome}}?</p>
