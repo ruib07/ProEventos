@@ -145,7 +145,8 @@ namespace ProEventos.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar eliminar eventos. Erro: {ex.Message}");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, 
+                $"Erro ao tentar eliminar eventos. Erro: {ex.Message}");
             }
         }
 

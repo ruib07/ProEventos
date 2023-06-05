@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ProEventos.Application.Contratos;
 using ProEventos.Application.Dtos;
 using ProEventos.Domain.Identity;
@@ -27,29 +28,107 @@ namespace ProEventos.Application
             _mapper = mapper;
         }
         
-        public Task<SignInResult> CheckUserPasswordAsync(UserUpdateDto userUpdateDto, string password)
+        public async Task<SignInResult> CheckUserPasswordAsync(UserUpdateDto userUpdateDto, string password)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _userManager.Users.SingleOrDefaultAsync(
+                    user => user.UserName == userUpdateDto.Username.ToLower()
+                );
+
+                return await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception($"Erro ao tentar verificar password: {ex.Message}");
+            }
         }
 
-        public Task<UserDto> CreateAccountAsync(UserDto userDto)
+        public async Task<UserDto> CreateAccountAsync(UserDto userDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = _mapper.Map<User>(userDto);
+                var result = await _userManager.CreateAsync(user, userDto.Password);
+                
+                if (result.Succeeded)
+                {
+                    var userToReturn = _mapper.Map<UserDto>(user);
+                    return userToReturn;
+                }
+
+                return null;
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception($"Erro ao tentar criar conta: {ex.Message}");
+            }
         }
 
-        public Task<UserUpdateDto> GetUserByUsernameAsync(string username)
+        public async Task<UserUpdateDto> GetUserByUserNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _userPersist.GetUserByUserNameAsync(userName);
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+                return userUpdateDto;
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception($"Erro ao tentar criar utilizador: {ex.Message}");
+            }
         }
 
-        public Task<UserUpdateDto> UpdateAccount(UserUpdateDto userUpdateDto)
+        public async Task<UserUpdateDto> UpdateAccount(UserUpdateDto userUpdateDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _userPersist.GetUserByUserNameAsync(userUpdateDto.Username);
+
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    _mapper.Map(userUpdateDto, user);
+                }
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, userUpdateDto.Password);
+
+                _userPersist.Update<User>(user);
+
+                if (await _userPersist.SaveChangesAsync())
+                {
+                    var userRetorno = await _userPersist.GetUserByUserNameAsync(user.UserName);
+                    return _mapper.Map<UserUpdateDto>(userRetorno);
+                }
+
+                return null;
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception($"Erro ao tentar atualizar utilizador: {ex.Message}");
+            }
         }
 
-        public Task<bool> UserExists(string username)
+        public async Task<bool> UserExists(string userName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _userManager.Users.AnyAsync(user => user.UserName == userName.ToLower());
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception($"Erro ao varificar se o utilizador existe: {ex.Message}");
+            }
         }
     }
 }
