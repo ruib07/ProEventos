@@ -33,7 +33,7 @@ namespace ProEventos.Application
             try
             {
                 var user = await _userManager.Users.SingleOrDefaultAsync(
-                    user => user.UserName == userUpdateDto.Username.ToLower()
+                    user => user.UserName == userUpdateDto.UserName.ToLower()
                 );
 
                 return await _signInManager.CheckPasswordSignInAsync(user, password, false);
@@ -89,7 +89,7 @@ namespace ProEventos.Application
         {
             try
             {
-                var user = await _userPersist.GetUserByUserNameAsync(userUpdateDto.Username);
+                var user = await _userPersist.GetUserByUserNameAsync(userUpdateDto.UserName);
 
                 if (user == null)
                 {
