@@ -6,7 +6,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ValidatorField } from '@app/helpers/ValidatorField';
+import { User } from '@app/models/Identity/User';
+import { AccountService } from '@app/services/account.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-registration',
@@ -14,13 +18,19 @@ import { ValidatorField } from '@app/helpers/ValidatorField';
   styleUrls: ['./registration.component.scss'],
 })
 export class RegistrationComponent implements OnInit {
+  user = {} as User;
   form!: FormGroup;
 
   get f(): any {
     return this.form.controls;
   }
 
-  constructor(public fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private accountService: AccountService,
+    private router: Router,
+    private toaster: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.validation();
@@ -46,5 +56,17 @@ export class RegistrationComponent implements OnInit {
 
   public cssValidator(campoForm: FormControl): any {
     return { 'is-invalid': campoForm.errors && campoForm.touched };
+  }
+
+  public register(): void {
+    this.user = { ...this.form.value };
+    this.accountService.register(this.user).subscribe(
+      () => {
+        this.router.navigateByUrl('/dashboard');
+      },
+      (error: any) => {
+        this.toaster.error(error.error);
+      }
+    );
   }
 }
