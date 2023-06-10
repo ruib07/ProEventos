@@ -5,6 +5,9 @@ import { ToastrService } from 'ngx-toastr';
 import { Evento } from '@app/models/Evento';
 import { EventoService } from '@app/services/evento.service';
 import { environment } from '@environments/environment';
+import { PaginatedResult, Pagination } from '@app/models/Pagination';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-evento-lista',
@@ -14,17 +17,12 @@ import { environment } from '@environments/environment';
 export class EventoListaComponent implements OnInit {
   modalRef?: BsModalRef;
   public eventos: Evento[] = [];
-  public eventosFiltrados: Evento[] = [];
   public eventoId!: number;
+  public pagination = {} as Pagination;
 
   public widthImg: number = 150;
   public marginImg: number = 2;
   public exibirImagem: boolean = true;
-  private filtroListado: string = '';
-
-  public get filtrolista(): string {
-    return this.filtroListado;
-  }
 
   constructor(
     private eventoService: EventoService,
@@ -34,23 +32,39 @@ export class EventoListaComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    this.pagination = {
+      currentPage: 1,
+      itemsPerPage: 3,
+      totalItems: 1,
+    } as Pagination;
     this.carregarEventos();
   }
 
-  public set filtrolista(value: string) {
-    this.filtroListado = value;
-    this.eventosFiltrados = this.filtrolista
-      ? this.filtrarEventos(this.filtrolista)
-      : this.eventos;
-  }
+  termoSearchChanged: Subject<string> = new Subject<string>();
 
-  public filtrarEventos(filtrarPor: string): Evento[] {
-    filtrarPor = filtrarPor.toLocaleLowerCase();
-    return this.eventos.filter(
-      (evento: any) =>
-        evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
-        evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
-    );
+  public filtrarEventos(evt: any): void {
+    if (this.termoSearchChanged.observers.length === 0) {
+      this.termoSearchChanged
+        .pipe(debounceTime(1000))
+        .subscribe((filtrarPor) => {
+          this.eventoService
+            .getEventos(
+              this.pagination.currentPage,
+              this.pagination.itemsPerPage,
+              filtrarPor
+            )
+            .subscribe({
+              next: (paginatedResult: PaginatedResult<Evento[]>) => {
+                this.eventos = paginatedResult.result;
+                this.pagination = paginatedResult.pagination;
+              },
+              error: (error: any) => {
+                this.toastr.error('Erro ao carregar os eventos.', 'Erro');
+              },
+            });
+        });
+    }
+    this.termoSearchChanged.next(evt.value);
   }
 
   public mostraImagem(imagemURL: string): string {
@@ -64,21 +78,28 @@ export class EventoListaComponent implements OnInit {
   }
 
   public carregarEventos(): void {
-    this.eventoService.getEventos().subscribe({
-      next: (eventos: Evento[]) => {
-        this.eventos = eventos;
-        this.eventosFiltrados = this.eventos;
-      },
-      error: (error: any) => {
-        this.toastr.error('Erro ao carregar os eventos.', 'Erro');
-      },
-    });
+    this.eventoService
+      .getEventos(this.pagination.currentPage, this.pagination.itemsPerPage)
+      .subscribe({
+        next: (paginatedResult: PaginatedResult<Evento[]>) => {
+          this.eventos = paginatedResult.result;
+          this.pagination = paginatedResult.pagination;
+        },
+        error: (error: any) => {
+          this.toastr.error('Erro ao carregar os eventos.', 'Erro');
+        },
+      });
   }
 
   openModal(event: any, template: TemplateRef<any>, eventoId: number): void {
     event.stopPropagation();
     this.eventoId = eventoId;
     this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  public pageChanged(event): void {
+    this.pagination.currentPage = event.page;
+    this.carregarEventos();
   }
 
   confirm(): void {
