@@ -29,6 +29,8 @@ import { EventoDetalheComponent } from './components/eventos/evento-detalhe/even
 import { EventoListaComponent } from './components/eventos/evento-lista/evento-lista.component';
 import { PerfilDetalheComponent } from './components/user/perfil/perfil-detalhe/perfil-detalhe.component';
 import { PalestranteListaComponent } from './components/palestrantes/palestrante-lista/palestrante-lista.component';
+import { PalestranteDetalheComponent } from './components/palestrantes/palestrante-detalhe/palestrante-detalhe.component';
+import { RedesSociaisComponent } from './components/redesSociais/redesSociais.component';
 
 import { EventoService } from './services/evento.service';
 import { LoteService } from './services/lote.service';
@@ -46,7 +48,6 @@ import { LoginComponent } from './components/user/login/login.component';
 import { RegistrationComponent } from './components/user/registration/registration.component';
 
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
-import { PalestranteDetalheComponent } from './components/palestrantes/palestrante-detalhe/palestrante-detalhe.component';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -57,6 +58,7 @@ defineLocale('pt-br', ptBrLocale);
     PalestrantesComponent,
     PalestranteListaComponent,
     PalestranteDetalheComponent,
+    RedesSociaisComponent,
     ContatosComponent,
     DashboardComponent,
     PerfilComponent,
