@@ -46,6 +46,7 @@ import { LoginComponent } from './components/user/login/login.component';
 import { RegistrationComponent } from './components/user/registration/registration.component';
 
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
+import { PalestranteDetalheComponent } from './components/palestrantes/palestrante-detalhe/palestrante-detalhe.component';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -55,6 +56,7 @@ defineLocale('pt-br', ptBrLocale);
     EventosComponent,
     PalestrantesComponent,
     PalestranteListaComponent,
+    PalestranteDetalheComponent,
     ContatosComponent,
     DashboardComponent,
     PerfilComponent,

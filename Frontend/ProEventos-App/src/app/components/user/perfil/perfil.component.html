@@ -1,4 +1,5 @@
-<app-Titulo [titulo]="'Perfil'"></app-Titulo>
+<app-Titulo [titulo]="'Perfil' + (ehPalestrante ? ' Palestrante' : ' Participante')"
+  [iconClass]="'fa fa-address-card'"></app-Titulo>
 
 <div class="card rounded shadow-sm">
   <div class="row p-3">
@@ -27,7 +28,7 @@
               </div>
               <div class="col-6 text-center">
                 <div class="h5">0</div>
-                <div class="h6 text-muted">Eventos como Participante</div>
+                <div class="h6 text-muted">Eventos como {{ehPalestrante ? ' Palestrante' : 'Participante'}}</div>
               </div>
             </div>
           </li>
@@ -47,14 +48,18 @@
           <ng-template tabHeading>
             <i class="fa fa-user mr-2"></i><span>Palestrante</span>
           </ng-template>
-
-          Componente Palestrante
+          <div class="form-group">
+            <h3 class="border-bottom">Palestrante</h3>
+          </div>
+          <app-palestrante-detalhe></app-palestrante-detalhe>
         </tab>
         <tab *ngIf="ehPalestrante" class="border border-top-0 p-3">
           <ng-template tabHeading>
             <i class="fa fa-share-square mr-2"></i><span>Rede Social</span>
           </ng-template>
-
+          <div class="form-group">
+            <h3 class="border-bottom">Rede Social</h3>
+          </div>
           Componente Rede Social
         </tab>
       </tabset>
