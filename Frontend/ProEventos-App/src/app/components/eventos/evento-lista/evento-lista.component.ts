@@ -24,22 +24,6 @@ export class EventoListaComponent implements OnInit {
   public marginImg: number = 2;
   public exibirImagem: boolean = true;
 
-  constructor(
-    private eventoService: EventoService,
-    private modalService: BsModalService,
-    private toastr: ToastrService,
-    private router: Router
-  ) {}
-
-  public ngOnInit(): void {
-    this.pagination = {
-      currentPage: 1,
-      itemsPerPage: 3,
-      totalItems: 1,
-    } as Pagination;
-    this.carregarEventos();
-  }
-
   termoSearchChanged: Subject<string> = new Subject<string>();
 
   public filtrarEventos(evt: any): void {
@@ -59,12 +43,29 @@ export class EventoListaComponent implements OnInit {
                 this.pagination = paginatedResult.pagination;
               },
               error: (error: any) => {
+                console.error(error);
                 this.toastr.error('Erro ao carregar os eventos.', 'Erro');
               },
             });
         });
     }
     this.termoSearchChanged.next(evt.value);
+  }
+
+  constructor(
+    private eventoService: EventoService,
+    private modalService: BsModalService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
+
+  public ngOnInit(): void {
+    this.pagination = {
+      currentPage: 1,
+      itemsPerPage: 3,
+      totalItems: 1,
+    } as Pagination;
+    this.carregarEventos();
   }
 
   public mostraImagem(imagemURL: string): string {
@@ -86,6 +87,7 @@ export class EventoListaComponent implements OnInit {
           this.pagination = paginatedResult.pagination;
         },
         error: (error: any) => {
+          console.error(error);
           this.toastr.error('Erro ao carregar os eventos.', 'Erro');
         },
       });
